@@ -40,7 +40,7 @@ class ChatModel(ChatOpenAI):
         kwargs["default_headers"] = existing_headers
 
         # ❗ School syntax preserved exactly
-        super().__init__(
+#        super().__init__(
             openai_api_base=openai_api_base,
             openai_api_key=openai_api_key,
             model_name=model_name,
@@ -48,19 +48,20 @@ class ChatModel(ChatOpenAI):
         )
 
 def get_model(model_name: str = "openrouter/free") -> ChatModel:
-    """
-    Gets a reference to a model
-    
-    :param model_name: Name of the model
-    :type model_name: str
-    :return: the model
-    :rtype: ChatModel
-    """
-    return ChatModel(
-        model_name=model_name,
-        max_tokens=512,
-        temperature=0
-    )
+#    """
+#    Gets a reference to a model
+#    
+#    :param model_name: Name of the model
+#    :param model_name: Name of the model
+#    :type model_name: str
+#    :return: the model
+#    :rtype: ChatModel
+#    """
+#    return ChatModel(
+#        model_name=model_name,
+#        max_tokens=512,
+#        temperature=0
+#    )
 
 if __name__ == "__main__":
     model = get_model()
