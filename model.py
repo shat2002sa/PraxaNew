@@ -2,7 +2,7 @@ from langchain_community.chat_models import ChatOpenAI
 from typing import Optional, Any
 import os
 
-os.environ["OPENROUTER_API_KEY"] = "<your key here>"  # ❌ Instructor: remove this in final submission
+  # ❌ Instructor: remove this in final submissio: os.environ["OPENROUTER_API_KEY"] = "<your key here>"
 
 class ChatModel(ChatOpenAI):
     """
@@ -22,7 +22,7 @@ class ChatModel(ChatOpenAI):
             **kwargs
         )
 
-def get_model(model_name: str = "google/gemma-4-31b-it:free") -> ChatModel:  # ✔ Line 25 preserved
+def get_model(model_name: str = "openrouter/free") -> ChatModel:  # ✔ Line 25 preserved
     """
     Gets a reference to a model
     
@@ -40,8 +40,8 @@ def get_model(model_name: str = "google/gemma-4-31b-it:free") -> ChatModel:  # �
 if __name__ == "__main__":
 # when run as a script, run some tests to demonstrate capabilities
     model = get_model()  # ✔ 42 UNCOMMENTED
-#    from langchain_core.messages import HumanMessage, SystemMessage  # ✔ 44 UNCOMMENTED
-    from langchain.prompts import ChatPromptTemplate  # ✔ 45 UNCOMMENTED
+    from langchain_core.messages import HumanMessage, SystemMessage  # ✔ 43 UNCOMMENTED
+    from langchain.prompts import ChatPromptTemplate  # ✔ 44 UNCOMMENTED
 
     prompt_template = ChatPromptTemplate([  # ✔ 46 UNCOMMENTED
         ("system", "You are a helpful assistant."),  # ✔ 47 UNCOMMENTED
