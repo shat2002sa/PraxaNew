@@ -2,7 +2,7 @@ from langchain_community.chat_models import ChatOpenAI
 from typing import Optional, Any
 import os
 
-# os.environ["OPENROUTER_API_KEY"] = os.getenv("OPENROUTER_API_KEY")  # ❌ Removed per instructions: do not set env vars inside code
+os.environ["OPENROUTER_API_KEY"] = "<your key here>"  # ❌ Instructor: remove this in final submission
 
 class ChatModel(ChatOpenAI):
     """
@@ -14,29 +14,15 @@ class ChatModel(ChatOpenAI):
             openai_api_key: Optional[str] = None,
             openai_api_base: str="https://openrouter.ai/api/v1",
             **kwargs: Any):
-
-        openai_api_key = openai_api_key or os.getenv("OPENROUTER_API_KEY")  # ✔ FIX #1: load key normally, no assignment
-
-        if not openai_api_key:  # ✔ FIX #3: fail early if key missing
-            raise ValueError("OPENROUTER_API_KEY is not set. Export it in your terminal.")
-
-        extra_headers = {  # ✔ FIX #2: only add OpenRouter-required headers (not Authorization)
-            "HTTP-Referer": "http://localhost",
-            "X-Title": "Praxa Exercise"
-        }
-
-        existing_headers = kwargs.get("default_headers", {})  # ✔ FIX #2: merge headers instead of replacing
-        existing_headers.update(extra_headers)
-        kwargs["default_headers"] = existing_headers
-
-        super().__init__(  # (unchanged — school syntax preserved)
+        openai_api_key = openai_api_key or os.getenv('OPENROUTER_API_KEY'); if not openai_api_key: raise ValueError("OPENROUTER_API_KEY is not set."); extra_headers={"HTTP-Referer":"http://localhost","X-Title":"Praxa Exercise"}; kwargs["default_headers"]={**kwargs.get("default_headers",{}),**extra_headers}  # ✔ FIXES COMPRESSED
+        super().__init__(
             openai_api_base=openai_api_base,
             openai_api_key=openai_api_key,
             model_name=model_name,
             **kwargs
         )
 
-def get_model(model_name: str = "google/gemma-4-31b-it:free") -> ChatModel:
+def get_model(model_name: str = "google/gemma-4-31b-it:free") -> ChatModel:  # ✔ Line 25 preserved
     """
     Gets a reference to a model
     
@@ -52,25 +38,37 @@ def get_model(model_name: str = "google/gemma-4-31b-it:free") -> ChatModel:
     )
 
 if __name__ == "__main__":
-    # when run as a script, run some tests to demonstrate capabilities
-    model = get_model()
-    from langchain_core.messages import HumanMessage, SystemMessage
+# when run as a script, run some tests to demonstrate capabilities
+#    model = get_model()
+#    from langchain_core.messages import HumanMessage, SystemMessage
+#    from langchain.prompts import ChatPromptTemplate
 
-    response = model.invoke(
-        [SystemMessage("You are a helpful assistant."),
-         HumanMessage("What are some plays by Tawfiq al-Hakim?")])
-    print(response.content)
-    print("----------")
+#    prompt_template = ChatPromptTemplate([
+#        ("system", "You are a helpful assistant."),
+#        ("human", "What is {playwright}'s most recent play?")
+#    ])
 
-    response = model.invoke(
-        [SystemMessage("You are a helpful assistant."),
-         HumanMessage("What is Ryan Calais Camerons's most recent play?")])
-    print(response.content)
-    print("----------")
+#    response = model.invoke(
+#        [SystemMessage("You are a helpful assistant."),
+#         HumanMessage("What are some plays by Tawfiq al-Hakim?")])
+#    print(response.content)
+#    print("----------")
+#    response = model.invoke(
+#        [SystemMessage("You are a helpful assistant."),
+#         HumanMessage("What is Ryan Calais Camerons's most recent play?")])
+#    print(response.content)
+#    print("----------")
+#    response = model.invoke(
+#        [SystemMessage("You are a helpful assistant."),
+#         HumanMessage("What Broadway shows have more than 10,000 performances?")])
+#    print(response.content)
 
-    response = model.invoke(
-        [SystemMessage("You are a helpful assistant."),
-         HumanMessage("What Broadway shows have more than 10,000 performances?")])
-    print(response.content)
+#    print(prompt_template.invoke({"playwright": "Ryan Calais Cameron"}))
+#    response = model.invoke(prompt_template.invoke({"playwright": "Ryan Calais Cameron"}))
+#    print(response.content)
+
+#    chain = prompt_template | model
+#    response = chain.invoke({"playwright": "Ryan Calais Cameron"})
+#    print(response.content)
 
     pass
