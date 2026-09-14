@@ -111,7 +111,7 @@ if __name__ == "__main__":
 #     )
 #     download_context_data(pdfs)
      context_data = load_context_data()
-#    chunks = chunk_context_data(context_data)
+     chunks = chunk_context_data(context_data)
 #    embedding_model = get_embedding_model()
 #    vector_store = create_vector_store(chunks, embedding_model)
 
