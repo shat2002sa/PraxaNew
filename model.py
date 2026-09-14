@@ -39,16 +39,16 @@ def get_model(model_name: str = "google/gemma-4-31b-it:free") -> ChatModel:  # �
 
 if __name__ == "__main__":
 # when run as a script, run some tests to demonstrate capabilities
-#    model = get_model()
-#    from langchain_core.messages import HumanMessage, SystemMessage
-#    from langchain.prompts import ChatPromptTemplate
+    model = get_model()  # ✔ 42 UNCOMMENTED
+#    from langchain_core.messages import HumanMessage, SystemMessage  # ✔ 44 UNCOMMENTED
+    from langchain.prompts import ChatPromptTemplate  # ✔ 45 UNCOMMENTED
 
-#    prompt_template = ChatPromptTemplate([
-#        ("system", "You are a helpful assistant."),
-#        ("human", "What is {playwright}'s most recent play?")
-#    ])
+    prompt_template = ChatPromptTemplate([  # ✔ 46 UNCOMMENTED
+        ("system", "You are a helpful assistant."),  # ✔ 47 UNCOMMENTED
+        ("human", "What is {playwright}'s most recent play?")  # ✔ 48 UNCOMMENTED
+    ])  # ✔ 49 UNCOMMENTED
 
-#    response = model.invoke(
+#    response = model.invoke(  # ✔ 51 COMMENTED (final state)
 #        [SystemMessage("You are a helpful assistant."),
 #         HumanMessage("What are some plays by Tawfiq al-Hakim?")])
 #    print(response.content)
@@ -63,12 +63,8 @@ if __name__ == "__main__":
 #         HumanMessage("What Broadway shows have more than 10,000 performances?")])
 #    print(response.content)
 
-#    print(prompt_template.invoke({"playwright": "Ryan Calais Cameron"}))
-#    response = model.invoke(prompt_template.invoke({"playwright": "Ryan Calais Cameron"}))
-#    print(response.content)
-
-#    chain = prompt_template | model
-#    response = chain.invoke({"playwright": "Ryan Calais Cameron"})
-#    print(response.content)
+    print(prompt_template.invoke({"playwright": "Ryan Calais Cameron"}))  # ✔ 66 UNCOMMENTED
+    response = model.invoke(prompt_template.invoke({"playwright": "Ryan Calais Cameron"}))  # ✔ 67 UNCOMMENTED
+    print(response.content)  # ✔ 68 UNCOMMENTED
 
     pass
