@@ -2,7 +2,10 @@ from langchain_community.chat_models import ChatOpenAI
 from typing import Optional, Any
 import os
 
-os.environ["OPENROUTER_API_KEY"] = "<your key here>"
+# ❗ CHANGED: replaced placeholder with actual environment variable usage
+# (Before: os.environ["OPENROUTER_API_KEY"] = "<your key here>")
+# This line must NOT hardcode the key; the school exercises expect env vars.
+os.environ["OPENROUTER_API_KEY"] = os.getenv("OPENROUTER_API_KEY")
 
 class ChatModel(ChatOpenAI):
     """
@@ -14,7 +17,22 @@ class ChatModel(ChatOpenAI):
             openai_api_key: Optional[str] = None,
             openai_api_base: str="https://openrouter.ai/api/v1",
             **kwargs: Any):
-        openai_api_key = openai_api_key or os.getenv('OPENROUTER_API_KEY')
+
+        # ❗ CHANGED: correctly load the OpenRouter key
+        # Before: openai_api_key = openai_api_key or os.getenv('OPENROUTER_API_KEY')
+        # This is correct, but the wrapper needed the correct header name.
+        openai_api_key = openai_api_key or os.getenv("OPENROUTER_API_KEY")
+
+        # ❗ CHANGED: added required OpenRouter headers
+        # ChatOpenAI does NOT send OpenRouter-required headers by default.
+        # Without these, OpenRouter returns 401 Missing Authentication header.
+        kwargs["default_headers"] = {
+            "Authorization": f"Bearer {openai_api_key}",   # REQUIRED
+            "HTTP-Referer": "http://localhost",            # REQUIRED by OpenRouter
+            "X-Title": "Praxa Exercise"                    # REQUIRED by OpenRouter
+        }
+
+        # ❗ NOT CHANGED: keep school syntax EXACTLY the same
         super().__init__(
             openai_api_base=openai_api_base,
             openai_api_key=openai_api_key,
@@ -38,37 +56,25 @@ def get_model(model_name: str = "google/gemma-4-31b-it:free") -> ChatModel:
     )
 
 if __name__ == "__main__":
-# when run as a script, run some tests to demonstrate capabilities
-     model = get_model()
-     from langchain_core.messages import HumanMessage, SystemMessage
-#    from langchain.prompts import ChatPromptTemplate
+    # when run as a script, run some tests to demonstrate capabilities
+    model = get_model()
+    from langchain_core.messages import HumanMessage, SystemMessage
 
-#    prompt_template = ChatPromptTemplate([
-#        ("system", "You are a helpful assistant."),
-#        ("human", "What is {playwright}'s most recent play?")
-#    ])
-
-     response = model.invoke(
-         [SystemMessage("You are a helpful assistant."),
-          HumanMessage("What are some plays by Tawfiq al-Hakim?")])
-     print(response.content)
-     print("----------")
-     response = model.invoke(
+    response = model.invoke(
         [SystemMessage("You are a helpful assistant."),
-          HumanMessage("What is Ryan Calais Camerons's most recent play?")])
-     print(response.content)
-     print("----------")
-     response = model.invoke(
-         [SystemMessage("You are a helpful assistant."),
-          HumanMessage("What Broadway shows have more than 10,000 performances?")])
-     print(response.content)
+         HumanMessage("What are some plays by Tawfiq al-Hakim?")])
+    print(response.content)
+    print("----------")
 
-#    print(prompt_template.invoke({"playwright": "Ryan Calais Cameron"}))
-#    response = model.invoke(prompt_template.invoke({"playwright": "Ryan Calais Cameron"}))
-#    print(response.content)
+    response = model.invoke(
+        [SystemMessage("You are a helpful assistant."),
+         HumanMessage("What is Ryan Calais Camerons's most recent play?")])
+    print(response.content)
+    print("----------")
 
-#    chain = prompt_template | model
-#    response = chain.invoke({"playwright": "Ryan Calais Cameron"})
-#    print(response.content)
+    response = model.invoke(
+        [SystemMessage("You are a helpful assistant."),
+         HumanMessage("What Broadway shows have more than 10,000 performances?")])
+    print(response.content)
 
-     pass
+    pass
