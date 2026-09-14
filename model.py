@@ -2,10 +2,8 @@ from langchain_community.chat_models import ChatOpenAI
 from typing import Optional, Any
 import os
 
-# ❗ CHANGED: replaced placeholder with actual environment variable usage
-# (Before: os.environ["OPENROUTER_API_KEY"] = "<your key here>")
-# This line must NOT hardcode the key; the school exercises expect env vars.
-os.environ["OPENROUTER_API_KEY"] = os.getenv("OPENROUTER_API_KEY")
+# ❌ REMOVED (per instructor): do NOT set env vars inside code
+# os.environ["OPENROUTER_API_KEY"] = os.getenv("OPENROUTER_API_KEY")
 
 class ChatModel(ChatOpenAI):
     """
@@ -18,21 +16,30 @@ class ChatModel(ChatOpenAI):
             openai_api_base: str="https://openrouter.ai/api/v1",
             **kwargs: Any):
 
-        # ❗ CHANGED: correctly load the OpenRouter key
-        # Before: openai_api_key = openai_api_key or os.getenv('OPENROUTER_API_KEY')
-        # This is correct, but the wrapper needed the correct header name.
+        # ✅ FIX #1: Load the key normally, but do NOT assign it back into os.environ
         openai_api_key = openai_api_key or os.getenv("OPENROUTER_API_KEY")
 
-        # ❗ CHANGED: added required OpenRouter headers
-        # ChatOpenAI does NOT send OpenRouter-required headers by default.
-        # Without these, OpenRouter returns 401 Missing Authentication header.
-        kwargs["default_headers"] = {
-            "Authorization": f"Bearer {openai_api_key}",   # REQUIRED
-            "HTTP-Referer": "http://localhost",            # REQUIRED by OpenRouter
-            "X-Title": "Praxa Exercise"                    # REQUIRED by OpenRouter
+        # ✅ FIX #3: Fail early if the key is missing
+        if not openai_api_key:
+            raise ValueError(
+                "OPENROUTER_API_KEY is not set. "
+                "Export it in your terminal before running: "
+                "export OPENROUTER_API_KEY='your_key_here'"
+            )
+
+        # ✅ FIX #2: Add ONLY the extra OpenRouter headers (do NOT override Authorization)
+        # We MERGE headers instead of replacing them.
+        extra_headers = {
+            "HTTP-Referer": "http://localhost",
+            "X-Title": "Praxa Exercise"
         }
 
-        # ❗ NOT CHANGED: keep school syntax EXACTLY the same
+        # Merge with any existing headers passed in kwargs
+        existing_headers = kwargs.get("default_headers", {})
+        existing_headers.update(extra_headers)
+        kwargs["default_headers"] = existing_headers
+
+        # ❗ School syntax preserved exactly
         super().__init__(
             openai_api_base=openai_api_base,
             openai_api_key=openai_api_key,
@@ -56,7 +63,6 @@ def get_model(model_name: str = "google/gemma-4-31b-it:free") -> ChatModel:
     )
 
 if __name__ == "__main__":
-    # when run as a script, run some tests to demonstrate capabilities
     model = get_model()
     from langchain_core.messages import HumanMessage, SystemMessage
 
