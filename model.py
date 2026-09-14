@@ -2,8 +2,7 @@ from langchain_community.chat_models import ChatOpenAI
 from typing import Optional, Any
 import os
 
-# ❌ REMOVED (per instructor): do NOT set env vars inside code
-# os.environ["OPENROUTER_API_KEY"] = os.getenv("OPENROUTER_API_KEY")
+# os.environ["OPENROUTER_API_KEY"] = os.getenv("OPENROUTER_API_KEY")  # ❌ Removed per instructions: do not set env vars inside code
 
 class ChatModel(ChatOpenAI):
     """
@@ -16,54 +15,44 @@ class ChatModel(ChatOpenAI):
             openai_api_base: str="https://openrouter.ai/api/v1",
             **kwargs: Any):
 
-        # ✅ FIX #1: Load the key normally, but do NOT assign it back into os.environ
-        openai_api_key = openai_api_key or os.getenv("OPENROUTER_API_KEY")
+        openai_api_key = openai_api_key or os.getenv("OPENROUTER_API_KEY")  # ✔ FIX #1: load key normally, no assignment
 
-        # ✅ FIX #3: Fail early if the key is missing
-        if not openai_api_key:
-            raise ValueError(
-                "OPENROUTER_API_KEY is not set. "
-                "Export it in your terminal before running: "
-                "export OPENROUTER_API_KEY='your_key_here'"
-            )
+        if not openai_api_key:  # ✔ FIX #3: fail early if key missing
+            raise ValueError("OPENROUTER_API_KEY is not set. Export it in your terminal.")
 
-        # ✅ FIX #2: Add ONLY the extra OpenRouter headers (do NOT override Authorization)
-        # We MERGE headers instead of replacing them.
-        extra_headers = {
+        extra_headers = {  # ✔ FIX #2: only add OpenRouter-required headers (not Authorization)
             "HTTP-Referer": "http://localhost",
             "X-Title": "Praxa Exercise"
         }
 
-        # Merge with any existing headers passed in kwargs
-        existing_headers = kwargs.get("default_headers", {})
+        existing_headers = kwargs.get("default_headers", {})  # ✔ FIX #2: merge headers instead of replacing
         existing_headers.update(extra_headers)
         kwargs["default_headers"] = existing_headers
 
-        # ❗ School syntax preserved exactly
-#        super().__init__(
+        super().__init__(  # (unchanged — school syntax preserved)
             openai_api_base=openai_api_base,
             openai_api_key=openai_api_key,
             model_name=model_name,
             **kwargs
         )
 
-def get_model(model_name: str = "openrouter/free") -> ChatModel:
-#    """
-#    Gets a reference to a model
-#    
-#    :param model_name: Name of the model
-#    :param model_name: Name of the model
-#    :type model_name: str
-#    :return: the model
-#    :rtype: ChatModel
-#    """
-#    return ChatModel(
-#        model_name=model_name,
-#        max_tokens=512,
-#        temperature=0
-#    )
+def get_model(model_name: str = "google/gemma-4-31b-it:free") -> ChatModel:
+    """
+    Gets a reference to a model
+    
+    :param model_name: Name of the model
+    :type model_name: str
+    :return: the model
+    :rtype: ChatModel
+    """
+    return ChatModel(
+        model_name=model_name,
+        max_tokens=512,
+        temperature=0
+    )
 
 if __name__ == "__main__":
+    # when run as a script, run some tests to demonstrate capabilities
     model = get_model()
     from langchain_core.messages import HumanMessage, SystemMessage
 
