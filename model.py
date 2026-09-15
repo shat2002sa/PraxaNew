@@ -63,8 +63,8 @@ if __name__ == "__main__":
 #         HumanMessage("What Broadway shows have more than 10,000 performances?")])
 #    print(response.content)
 
-    print(prompt_template.invoke({"playwright": "Ryan Calais Cameron"}))  # ✔ 66 UNCOMMENTED
-    response = model.invoke(prompt_template.invoke({"playwright": "Ryan Calais Cameron"}))  # ✔ 67 UNCOMMENTED
-    print(response.content)  # ✔ 68 UNCOMMENTED
+#    print(prompt_template.invoke({"playwright": "Ryan Calais Cameron"}))  # ✔ 66 UNCOMMENTED
+#    response = model.invoke(prompt_template.invoke({"playwright": "Ryan Calais Cameron"}))  # ✔ 67 UNCOMMENTED
+#    print(response.content)  # ✔ 68 UNCOMMENTED
 
     pass
