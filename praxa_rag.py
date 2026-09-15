@@ -48,12 +48,12 @@ def answer_and_sources(question: str) -> dict[str, str]:
 
 if __name__ == "__main__":
 # when run as a script, run some tests to demonstrate capabilities
-    docs = retriever.invoke("What is Ryan Calais Cameron's most recent play?")
-    print(f"Found {len(docs)} documents:")
+#    docs = retriever.invoke("What is Ryan Calais Cameron's most recent play?")
+#    print(f"Found {len(docs)} documents:")
 
-    for doc in docs:
-        print("-----")
-        print(doc)
+#    for doc in docs:
+#        print("-----")
+#        print(doc)
 
 #    print(question_and_docs.invoke("What is Ryan Calais Cameron's most recent play?"))
 
