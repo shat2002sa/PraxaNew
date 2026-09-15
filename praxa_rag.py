@@ -71,9 +71,9 @@ if __name__ == "__main__":
 #    print(type(result))
 #    print(result)
 
-    chain = question_and_docs | context_runnable | prompt_template | llm
-    result = chain.invoke("What is Ryan Calais Cameron's most recent play?")
-    print(result.content)
+#    chain = question_and_docs | context_runnable | prompt_template | llm
+#    result = chain.invoke("What is Ryan Calais Cameron's most recent play?")
+#    print(result.content)
 
 #    result = chain_with_sources.invoke("What Broadway shows have had more than 10,000 performances?")
 #    print("The docs used in this answer:")
