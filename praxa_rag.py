@@ -1,14 +1,14 @@
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema.runnable import RunnablePassthrough, RunnableParallel
 from langchain_core.documents import Document
-import context, model
+import context as context_module, model as model_module
 
 prompt_template = ChatPromptTemplate([
     ("system", "You are an assistant providing answers to questions about the theater. In addition to your training data, use the additional context provided below to provide up-to-date information."),
     ("human", "Question: {question}\nContext: {context}\nAnswer:")
 ])
 
-retriever = context.get_vector_store().as_retriever()
+retriever = context_module.get_vector_store().as_retriever()
 
 question_and_docs = RunnableParallel(
     { "question": RunnablePassthrough(),
@@ -29,7 +29,7 @@ def make_context_string(dict_with_docs: dict[str, Document]) -> str:
     return "\n\n".join(doc.page_content for doc in dict_with_docs["context_docs"])
 
 context_runnable = RunnablePassthrough.assign(context=make_context_string)
-llm = model.get_model()
+llm = model_module.get_model()
 answer_chain = context_runnable | prompt_template | llm
 chain_with_sources = question_and_docs.assign(answer=answer_chain)
 
@@ -66,12 +66,12 @@ if __name__ == "__main__":
 #    print(type(add_length))
 #    print(add_length.invoke(my_dict))
 
-#    complete_prompt_chain = question_and_docs | context | prompt_template
+#    complete_prompt_chain = question_and_docs | context_runnable | prompt_template
 #    result = complete_prompt_chain.invoke("What is Ryan Calais Cameron's most recent play?")
 #    print(type(result))
 #    print(result)
 
-#    chain = question_and_docs | context | prompt_template | model
+#    chain = question_and_docs | context_runnable | prompt_template | llm
 #    result = chain.invoke("What is Ryan Calais Cameron's most recent play?")
 #    print(result.content)
 
