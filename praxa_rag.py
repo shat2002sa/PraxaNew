@@ -28,9 +28,9 @@ def make_context_string(dict_with_docs: dict[str, Document]) -> str:
     """
     return "\n\n".join(doc.page_content for doc in dict_with_docs["context_docs"])
 
-context = RunnablePassthrough.assign(context=make_context_string)
-model = model.get_model()
-answer_chain = context | prompt_template | model
+context_runnable = RunnablePassthrough.assign(context=make_context_string)
+llm = model.get_model()
+answer_chain = context_runnable | prompt_template | llm
 chain_with_sources = question_and_docs.assign(answer=answer_chain)
 
 def answer_and_sources(question: str) -> dict[str, str]:
