@@ -82,6 +82,6 @@ if __name__ == "__main__":
     print("The answer:")
     print(result["answer"].content)
 
-#    print(answer_and_sources("What is Ryan Calais Cameron's most recent play?"))
+    print(answer_and_sources("What is Ryan Calais Cameron's most recent play?"))
 
     pass
